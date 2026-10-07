@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Dynamic Priority CPU Scheduling Simulator
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <script
+        src="script.js"
+        defer
+    ></script>
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header">
+
+    <div class="header-content">
+
+        <div class="title-area">
+
+            <div class="eyebrow">
+                CPU SCHEDULING SIMULATOR
+            </div>
+
+            <h1>
+                Dynamic Priority
+                <span>CPU Scheduling</span>
+            </h1>
+
+            <p class="subtitle">
+                Add processes, choose a scheduling method,
+                and watch the CPU scheduler make decisions
+                step by step.
+            </p>
+
+        </div>
+
+
+        <div class="ready-indicator">
+
+            <span class="ready-dot"></span>
+
+            <span>
+                READY
+            </span>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main class="container">
+
+
+<!-- =====================================================
+     STEP 1 — ADD PROCESSES
+===================================================== -->
+
+<section class="card">
+
+    <div class="section-header">
+
+        <div class="section-title">
+
+            <span class="step-number">
+                01
+            </span>
+
+            <div>
+
+                <h2>
+                    Add Your Processes
+                </h2>
+
+                <p>
+                    Enter the details of each process below.
+                    Process IDs will be assigned automatically.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- INPUT AREA -->
+
+    <div class="input-area">
+
+
+        <div class="input-box">
+
+            <label for="arrivalTime">
+                Arrival Time
+            </label>
+
+            <input
+                type="number"
+                id="arrivalTime"
+                min="0"
+                placeholder="Example: 0"
+            >
+
+            <small>
+                When the process enters the ready queue
+            </small>
+
+        </div>
+
+
+
+        <div class="input-box">
+
+            <label for="burstTime">
+                Burst Time
+            </label>
+
+            <input
+                type="number"
+                id="burstTime"
+                min="1"
+                placeholder="Example: 5"
+            >
+
+            <small>
+                CPU time required by the process
+            </small>
+
+        </div>
+
+
+
+        <div class="input-box">
+
+            <label for="priority">
+                Initial Priority
+            </label>
+
+            <input
+                type="number"
+                id="priority"
+                min="1"
+                placeholder="Example: 3"
+            >
+
+            <small>
+                Higher number = higher priority
+            </small>
+
+        </div>
+
+
+
+        <button
+            class="add-process-button"
+            id="addProcessBtn"
+        >
+
+            <span class="plus">
+                +
+            </span>
+
+            <span>
+                Add Process
+            </span>
+
+        </button>
+
+
+    </div>
+
+
+    <!-- INFO -->
+
+    <div class="important-note">
+
+        <div class="note-icon">
+            !
+        </div>
+
+        <div>
+
+            <strong>
+                How priority works
+            </strong>
+
+            <p>
+                A process with priority 5 is selected before
+                a process with priority 3. In Dynamic Priority
+                Scheduling, waiting processes can gain priority
+                through aging.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     STEP 2 — PROCESS LIST
+===================================================== -->
+
+<section class="card">
+
+    <div class="section-header">
+
+        <div class="section-title">
+
+            <span class="step-number">
+                02
+            </span>
+
+            <div>
+
+                <h2>
+                    Process Queue
+                </h2>
+
+                <p>
+                    These are the processes waiting to be scheduled.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="process-counter">
+
+            <span>
+                Total Processes
+            </span>
+
+            <strong id="processCount">
+                0
+            </strong>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="table-wrapper">
+
+        <table class="process-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Process
+                    </th>
+
+                    <th>
+                        Arrival Time
+                    </th>
+
+                    <th>
+                        Burst Time
+                    </th>
+
+                    <th>
+                        Initial Priority
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="processTableBody">
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="empty-row"
+                    >
+
+                        <div class="empty-icon">
+                            +
+                        </div>
+
+                        <strong>
+                            No processes yet
+                        </strong>
+
+                        <span>
+                            Add your first process above
+                        </span>
+
+                    </td>
+
+                </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     STEP 3 — CHOOSE ALGORITHM
+===================================================== -->
+
+<section class="card">
+
+    <div class="section-header">
+
+        <div class="section-title">
+
+            <span class="step-number">
+                03
+            </span>
+
+            <div>
+
+                <h2>
+                    Choose Scheduling Method
+                </h2>
+
+                <p>
+                    Run the same processes using either scheduling method.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="algorithm-grid">
+
+
+        <!-- NORMAL -->
+
+        <button
+            class="algorithm-card normal-card"
+            id="normalBtn"
+        >
+
+            <div class="algorithm-number">
+                01
+            </div>
+
+            <div class="algorithm-content">
+
+                <h3>
+                    Normal Priority Scheduling
+                </h3>
+
+                <p>
+                    Processes keep their original priority
+                    throughout the simulation.
+                </p>
+
+                <div class="algorithm-rule">
+
+                    <span>
+                        RULE
+                    </span>
+
+                    Highest fixed priority runs first.
+
+                </div>
+
+            </div>
+
+            <div class="run-arrow">
+                →
+            </div>
+
+        </button>
+
+
+
+        <!-- DYNAMIC -->
+
+        <button
+            class="algorithm-card dynamic-card"
+            id="dynamicBtn"
+        >
+
+            <div class="algorithm-number">
+                02
+            </div>
+
+            <div class="algorithm-content">
+
+                <h3>
+                    Dynamic Priority Scheduling
+                </h3>
+
+                <p>
+                    Waiting processes gradually gain priority
+                    through the aging mechanism.
+                </p>
+
+                <div class="algorithm-rule">
+
+                    <span>
+                        RULE
+                    </span>
+
+                    Waiting too long increases priority.
+
+                </div>
+
+            </div>
+
+            <div class="run-arrow">
+                →
+            </div>
+
+        </button>
+
+
+    </div>
+
+
+
+    <button
+        class="reset-button"
+        id="resetBtn"
+    >
+        Reset Everything
+    </button>
+
+</section>
+
+
+
+<!-- =====================================================
+     STEP 4 — LIVE SIMULATION
+===================================================== -->
+
+<section
+    class="card simulation-card hidden"
+    id="simulationSection"
+>
+
+
+    <div class="simulation-header">
+
+        <div class="section-title">
+
+            <span class="step-number">
+                04
+            </span>
+
+            <div>
+
+                <h2>
+                    Live Simulation
+                </h2>
+
+                <p>
+                    Watch the scheduler make one decision at a time.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="method-badge"
+            id="simulationMethod"
+        >
+            -
+        </div>
+
+    </div>
+
+
+
+    <!-- BIG CURRENT TIME -->
+
+    <div class="time-display">
+
+        <div class="time-label">
+            SIMULATION TIME
+        </div>
+
+        <div
+            class="big-time"
+            id="currentTime"
+        >
+            0
+        </div>
+
+        <div class="time-unit">
+            CPU TIME UNITS
+        </div>
+
+    </div>
+
+
+
+    <!-- STATUS CARDS -->
+
+    <div class="status-grid">
+
+
+        <div class="status-card">
+
+            <span>
+                CURRENTLY RUNNING
+            </span>
+
+            <strong
+                id="runningProcess"
+            >
+                -
+            </strong>
+
+        </div>
+
+
+
+        <div class="status-card">
+
+            <span>
+                PROCESSES COMPLETED
+            </span>
+
+            <strong
+                id="completedCount"
+            >
+                0 / 0
+            </strong>
+
+        </div>
+
+
+
+        <div class="status-card">
+
+            <span>
+                CPU STATUS
+            </span>
+
+            <strong
+                id="cpuStatus"
+            >
+                Waiting...
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- EXPLANATION -->
+
+    <div
+        class="live-explanation"
+        id="liveExplanation"
+    >
+
+        <span class="explanation-icon">
+            ▶
+        </span>
+
+        <p>
+            The simulation will explain what the CPU is doing here.
+        </p>
+
+    </div>
+
+
+
+    <!-- GANTT -->
+
+    <div class="simulation-panel">
+
+        <div class="panel-heading">
+
+            <div>
+
+                <h3>
+                    CPU Execution Timeline
+                </h3>
+
+                <p>
+                    Each block represents one or more CPU time units.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="gantt-container"
+            id="ganttContainer"
+        >
+
+            <div class="gantt-empty">
+                Simulation has not started yet.
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- LIVE PRIORITIES -->
+
+    <div class="simulation-panel">
+
+        <div class="panel-heading">
+
+            <div>
+
+                <h3>
+                    Live Process Status
+                </h3>
+
+                <p>
+                    Watch priorities change while processes wait.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="live-priority-container"
+            id="livePriorityContainer"
+        >
+
+        </div>
+
+    </div>
+
+
+
+    <!-- LOG -->
+
+    <div class="simulation-panel">
+
+        <div class="panel-heading">
+
+            <div>
+
+                <h3>
+                    What Is Happening?
+                </h3>
+
+                <p>
+                    A step-by-step record of the scheduler's decisions.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="simulation-log"
+            id="simulationLog"
+        >
+
+            <div class="log-item">
+
+                <span class="log-time">
+                    SYSTEM
+                </span>
+
+                <span>
+                    Simulation ready.
+                </span>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     STEP 5 — RESULTS
+===================================================== -->
+
+<section
+    class="card results-card hidden"
+    id="resultsSection"
+>
+
+
+    <div class="section-header">
+
+        <div class="section-title">
+
+            <span class="step-number">
+                05
+            </span>
+
+            <div>
+
+                <h2>
+                    Final Results
+                </h2>
+
+                <p>
+                    Performance measurements for every process.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div
+            class="method-badge"
+            id="resultMethod"
+        >
+            -
+        </div>
+
+    </div>
+
+
+
+    <!-- RESULT TABLE -->
+
+    <div class="table-wrapper">
+
+        <table class="results-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Process
+                    </th>
+
+                    <th>
+                        Arrival
+                    </th>
+
+                    <th>
+                        Burst
+                    </th>
+
+                    <th>
+                        Initial Priority
+                    </th>
+
+                    <th>
+                        Completion Time
+                    </th>
+
+                    <th>
+                        Turnaround Time
+                    </th>
+
+                    <th>
+                        Waiting Time
+                    </th>
+
+                    <th>
+                        Response Time
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="resultsTableBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+
+    <!-- AVERAGES -->
+
+    <div class="average-title">
+        AVERAGE PERFORMANCE
+    </div>
+
+
+    <div class="average-grid">
+
+
+        <div class="average-card">
+
+            <span>
+                Average Completion Time
+            </span>
+
+            <strong id="avgCT">
+                0.00
+            </strong>
+
+            <small>
+                Average time at which processes finish
+            </small>
+
+        </div>
+
+
+
+        <div class="average-card">
+
+            <span>
+                Average Turnaround Time
+            </span>
+
+            <strong id="avgTAT">
+                0.00
+            </strong>
+
+            <small>
+                Total time from arrival to completion
+            </small>
+
+        </div>
+
+
+
+        <div class="average-card">
+
+            <span>
+                Average Waiting Time
+            </span>
+
+            <strong id="avgWT">
+                0.00
+            </strong>
+
+            <small>
+                Average time spent waiting
+            </small>
+
+        </div>
+
+
+
+        <div class="average-card">
+
+            <span>
+                Average Response Time
+            </span>
+
+            <strong id="avgRT">
+                0.00
+            </strong>
+
+            <small>
+                Time until first CPU execution
+            </small>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- =====================================================
+     STEP 6 — EXPLANATION
+===================================================== -->
+
+<section class="card explanation-section">
+
+    <div class="section-header">
+
+        <div class="section-title">
+
+            <span class="step-number">
+                06
+            </span>
+
+            <div>
+
+                <h2>
+                    Understanding Dynamic Priority
+                </h2>
+
+                <p>
+                    The main idea behind your project.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="concept-grid">
+
+
+        <div class="concept-card">
+
+            <div class="concept-number">
+                01
+            </div>
+
+            <h3>
+                Start with a Priority
+            </h3>
+
+            <p>
+                Every process enters the ready queue
+                with an initial priority given by the user.
+            </p>
+
+        </div>
+
+
+
+        <div class="concept-card">
+
+            <div class="concept-number">
+                02
+            </div>
+
+            <h3>
+                Track Waiting
+            </h3>
+
+            <p>
+                The scheduler observes how long each
+                process has been waiting for CPU time.
+            </p>
+
+        </div>
+
+
+
+        <div class="concept-card">
+
+            <div class="concept-number">
+                03
+            </div>
+
+            <h3>
+                Increase Priority
+            </h3>
+
+            <p>
+                After a process waits for the aging interval,
+                its priority is increased.
+            </p>
+
+        </div>
+
+
+
+        <div class="concept-card">
+
+            <div class="concept-number">
+                04
+            </div>
+
+            <h3>
+                Reduce Starvation
+            </h3>
+
+            <p>
+                A process with a low initial priority can
+                eventually become important enough to run.
+            </p>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+</main>
+
+
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="footer">
+
+    <strong>
+        Dynamic Priority Adjustment in CPU Scheduling
+    </strong>
+
+    <span>
+        Interactive BTech Project Prototype
+    </span>
+
+</footer>
+
+
+</body>
+
+</html>
